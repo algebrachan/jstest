@@ -1,15 +1,8 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+// 引入react核心库
+import React from 'react'
+// 引入ReactDOM
+import ReactDOM from 'react-dom'
+// 引入App
+import App from './App'
 
-ReactDOM.render(
-  // StrictMode 检查react中不合理的写法
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-  document.getElementById('root')
-);
-// 用于记录页面性能
-reportWebVitals();
+ReactDOM.render(<App/>,document.getElementById('root'))
