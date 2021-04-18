@@ -51,7 +51,6 @@ mongoose.connect('mongodb://localhost/playground', { useNewUrlParser: true })
 //         }
 //     })
 
-
 // 关联查询
 // 创建用户规则
 const userSchema = new mongoose.Schema({
