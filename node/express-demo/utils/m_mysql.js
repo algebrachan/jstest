@@ -10,3 +10,12 @@ const db = mysql.createPool({
 
 module.exports = db
 
+// const sql = `select * from user where username=?`
+// db.query(sql, ['wc'], (err, results) => {
+//   if (err) {
+//     console.log(err.message)
+//   }
+//   console.log(results)
+//   return
+// })
+

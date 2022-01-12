@@ -2,6 +2,8 @@
  * 加密工具
  */
 const bcrypt = require('bcryptjs')
+const jwt = require('jsonwebtoken')
+const config = require('../config')
 
 /**
  * @param {str} original_str 明文
@@ -11,7 +13,6 @@ const bcrypt = require('bcryptjs')
 exports.bcrype_encode = (original_str, random_len) => {
   return bcrypt.hashSync(original_str, random_len);
 }
-
 /**
  * 
  * @param {str} origin_str  原始字符串
@@ -20,4 +21,13 @@ exports.bcrype_encode = (original_str, random_len) => {
  */
 exports.bcrype_compare = (origin_str, bcrypt_str) => {
   return bcrypt.compareSync(origin_str, bcrypt_str)
+}
+
+/**
+ * 
+ * @param {object} username  用户名
+ * @returns 
+ */
+exports.get_token = (user_info) => {
+  return jwt.sign(user_info, config.jwtSecretKey, { expiresIn: config.jwtExpiresIn })
 }
