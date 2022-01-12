@@ -4,6 +4,8 @@ const cors = require('cors')
 const joi = require('@hapi/joi')
 // 创建 express 的服务器实例
 const userRouter = require('./routes/user');
+const expressJWT = require('express-jwt')
+const config = require('./config')
 
 
 const app = express()
@@ -24,17 +26,33 @@ app.use((req, res, next) => {
   }
   next()
 })
-// 参数验证 
+// token验证中间件
+app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] })) // 排除 /api 开头的
+
+
+
+app.use('/api', userRouter);
+
+app.get('/test', (req, res) => {
+  console.log(req.user)
+  res.send({
+    message: 'ok'
+  })
+})
+
+
+
+// 错误处理 需要放在最后，参数验证 
 app.use((err, req, res, next) => {
-  // 数据验证失败
+  // 数据验证错误
+  console.log('error', err.message)
   if (err instanceof joi.ValidationError) return res.cc(err)
+  // token 验证错误
+  if (err.name === 'UnauthorizedError') return res.cc('身份验证失败!')
   // 未知错误
   res.cc(err)
   next()
 })
-
-app.use('/api', userRouter);
-
 
 // 调用app.listen 方法指定端口号
 app.listen(3005, () => {
