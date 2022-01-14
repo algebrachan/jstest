@@ -6,15 +6,17 @@ const joi = require('@hapi/joi')
 const userRouter = require('./routes/user');
 const expressJWT = require('express-jwt')
 const config = require('./config')
-
+const log = require('./utils/m_log')
 
 const app = express()
+log.use(app)
 // 跨域
 app.use(cors())
 // 解析json
 app.use(express.json())
 // 解析x-www-form-urlencoded 格式表单
 app.use(express.urlencoded({ extended: false }))
+
 // 响应处理失败结果统一中间件
 app.use((req, res, next) => {
   res.cc = (err, status = 1) => {
@@ -34,7 +36,7 @@ app.use(expressJWT({ secret: config.jwtSecretKey }).unless({ path: [/^\/api\//] 
 app.use('/api', userRouter);
 
 app.get('/test', (req, res) => {
-  console.log(req.user)
+  log.logger.warn('test', req.user)
   res.send({
     message: 'ok'
   })
@@ -45,7 +47,7 @@ app.get('/test', (req, res) => {
 // 错误处理 需要放在最后，参数验证 
 app.use((err, req, res, next) => {
   // 数据验证错误
-  console.log('error', err.message)
+  log.logger.error(err.message)
   if (err instanceof joi.ValidationError) return res.cc(err)
   // token 验证错误
   if (err.name === 'UnauthorizedError') return res.cc('身份验证失败!')
