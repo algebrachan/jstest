@@ -14,6 +14,8 @@ const userSchema = new Schema({
 })
 
 const User = model('user', userSchema)
+// User.findOne()
+// https://mongoosejs.com/docs/index.html
 
 module.exports = {
   User,

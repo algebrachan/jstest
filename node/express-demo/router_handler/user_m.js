@@ -25,27 +25,44 @@ exports.regUser = (req, res) => {
 }
 
 // 登录处理函数
-exports.login = (req, res) => {
+exports.login = async (req, res) => {
   const { username, password } = req.body;
-  User.findOne({ username, })
-    .then(result => {
-      if (result) {
-        // 校验密码
-        const compareResult = encrypt.bcrype_compare(password, result.password)
-        if (!compareResult) return res.cc('密码错误!')
-        const user_mobj = result['_doc']
-        const user = { ...user_mobj, password: '', user_pic: '' }
-        User.findOneAndUpdate({ username }, { $set: { time: moment(), age: 1.23 } }).then() // 设置登录时间
-        return res.send({
-          status: 0,
-          message: '登录成功',
-          token: encrypt.get_token(user)
-        })
-      } else {
-        return res.cc('用户不存在', 0)
-      }
+  // User.findOne({ username, })
+  //   .then(result => {
+  //     if (result) {
+  //       // 校验密码
+  //       const compareResult = encrypt.bcrype_compare(password, result.password)
+  //       if (!compareResult) return res.cc('密码错误!')
+  //       const user_mobj = result['_doc']
+  //       const user = { ...user_mobj, password: '', user_pic: '' }
+  //       User.findOneAndUpdate({ username }, { $set: { time: moment(), age: 1.23 } }).then() // 设置登录时间
+  //       return res.send({
+  //         status: 0,
+  //         message: '登录成功',
+  //         token: encrypt.get_token(user)
+  //       })
+  //     } else {
+  //       return res.cc('用户不存在', 0)
+  //     }
+  //   })
+  const result = await User.findOne({ username, })
+  if (result) {
+    // 校验密码
+    const compareResult = encrypt.bcrype_compare(password, result.password)
+    if (!compareResult) return res.cc('密码错误!')
+    const user = { ...result, password: '', user_pic: '' }
+    console.log('user', user)
+    await User.findOneAndUpdate({ username }, { $set: { time: moment(), age: 1.4 } })// 设置登录时间
+    return res.send({
+      status: 0,
+      message: '登录成功',
+      token: encrypt.get_token(user)
     })
+  } else {
+    return res.cc('用户不存在', 0)
+  }
 }
+
 
 exports.demoTest = (req, res) => {
   res.cc('error', 2)
